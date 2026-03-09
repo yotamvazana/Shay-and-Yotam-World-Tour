@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>המסע שלנו יחד</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Hebrew-friendly fonts: Assistant for body, Amatic SC for handwritten feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Assistant:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-white: #f9f7f2;
+        }
+        body {
+            background-color: #fafafa;
+            font-family: 'Assistant', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+        h1, h2 {
+            font-family: 'Assistant', sans-serif;
+            font-weight: 700;
+        }
+        .handwritten {
+            font-family: 'Amatic SC', cursive;
+            font-size: 2rem;
+            line-height: 1;
+        }
+        
+        /* Larger Polaroid Styling */
+        .polaroid {
+            background: white;
+            padding: 20px 20px 60px 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            width: 340px;
+            height: 420px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .polaroid img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            background: #f3f4f6;
+            display: block;
+        }
+        .polaroid-caption {
+            margin-top: 15px;
+            text-align: center;
+            color: #444;
+        }
+
+        /* Scroll Animation Sections */
+        .main-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .sticky-container {
+            height: 1000vh; /* Total scroll depth */
+            position: relative;
+        }
+        
+        .section-view {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            padding: 0 10%;
+        }
+
+        .bg-rome { background: #fff5f0; }
+        .bg-brussels { background: #fdf4ff; }
+        .bg-nyc { background: #f0f4f8; }
+        .bg-iceland { background: #f0f9ff; }
+        .bg-amsterdam { background: #fff8f0; }
+        .bg-home { background: #fdf2f8; }
+
+        .line-decoration {
+            width: 2px;
+            height: 100px;
+            background: #d1d5db;
+            margin: 20px auto;
+        }
+
+        /* Photo Pile Styling */
+        .photo-pile-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            padding: 40px;
+        }
+        .scatter-photo {
+            background: white;
+            padding: 12px 12px 35px 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 240px;
+            transition: transform 0.3s ease;
+        }
+        .scatter-photo:hover {
+            transform: scale(1.1) rotate(0deg) !important;
+            z-index: 50;
+        }
+        .scatter-photo img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .trip-image {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Mobile Adaptations */
+        @media (max-width: 768px) {
+            .polaroid {
+                width: 280px;
+                height: 350px;
+                padding: 10px 10px 45px 10px;
+            }
+            .polaroid img {
+                height: 260px;
+            }
+            .content-layer {
+                padding: 0 5%;
+                flex-direction: column;
+                justify-content: center;
+            }
+            .container {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            h2 {
+                font-size: 3rem !important;
+                line-height: 1.1;
+                text-align: center;
+            }
+            .trip-image {
+                max-width: 100%;
+            }
+            .text-2xl {
+                font-size: 1.125rem !important;
+                text-align: center;
+            }
+            .space-y-8 {
+                text-align: center !important;
+            }
+            .photo-pile-container {
+                padding: 20px 10px;
+                gap: 15px;
+            }
+            .scatter-photo {
+                width: 160px;
+                padding: 8px 8px 25px 8px;
+            }
+            .scatter-photo img {
+                height: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div class="sticky-container">
+            <div class="section-view">
+                
+                <!-- 0. Header Layer -->
+                <div class="content-layer opacity-100 visible flex-col justify-center text-center px-4" id="layer-intro">
+                    <p class="handwritten text-4xl text-rose-500 mb-4">לאשתי המדהימה</p>
+                    <h1 class="text-6xl md:text-8xl mb-8">המסע שלנו בעולם</h1>
+                    <p class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-500 leading-relaxed italic">
+                        "אוסף של רגעים בערים שהרגישו כמו בית - רק כי את היית שם."
+                    </p>
+                    <div class="mt-12 md:mt-20 animate-bounce">
+                        <p class="text-sm uppercase tracking-widest text-gray-400">גללו מטה כדי לראות את הזיכרונות שלנו</p>
+                        <div class="line-decoration"></div>
+                    </div>
+                </div>
+
+                <!-- 1. Stacking Polaroids (Phase 1) -->
+                <!-- Corrected Order: Brussels -> Amsterdam -> NYC -> Rome -> Iceland -> Us -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="polaroid-stack">
+                    <div class="polaroid" id="pb">
+                        <img src="Brussles-Polaroid.jpg" alt="בריסל">
+                        <div class="polaroid-caption handwritten text-3xl">וופלים, שוקולד ו"קצת" פחד</div>
+                    </div>
+                    <div class="polaroid" id="p3">
+                        <img src="Amsterdam-Polaroid.jpg" alt="אמסטרדם">
+                        <div class="polaroid-caption handwritten text-3xl">אמסטרדם, איך אפשר לשכוח?</div>
+                    </div>
+                    <div class="polaroid" id="p2">
+                        <img src="NYC-Polaroid.jpg" alt="ניו יורק">
+                        <div class="polaroid-caption handwritten text-3xl">גיחה קצרה לניו יורק</div>
+                    </div>
+                    <div class="polaroid" id="p1">
+                        <img src="Rome-Polaroid.jpg" alt="רומא">
+                        <div class="polaroid-caption handwritten text-3xl">המקום שבו התארסנו</div>
+                    </div>
+                    <div class="polaroid" id="p4">
+                        <img src="Iceland-Polaroid.jpg" alt="איסלנד">
+                        <div class="polaroid-caption handwritten text-3xl">ירח דבש באיסלנד</div>
+                    </div>
+                    <div class="polaroid" id="p5">
+                        <img src="Us-Polaroid.jpg" alt="אנחנו">
+                        <div class="polaroid-caption handwritten text-3xl">התמונה האהובה עליי שלנו מהטיולים</div>
+                    </div>
+                </div>
+
+                <!-- 2. Brussels Layer -->
+                <div class="content-layer bg-brussels" id="layer-brussels">
+                    <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-8 text-right">
+                            <span class="text-purple-400 font-bold tracking-widest uppercase text-sm italic">אביב 2023</span>
+                            <h2 class="text-5xl md:text-7xl text-purple-800">בריסל</h2>
+                            <p class="text-gray-600 leading-loose text-lg md:text-2xl">
+בריסל הייתה… חוויה. בין רגעים קצת מלחיצים לרגעים שבהם תהינו איך בדיוק הגענו למצב הזה, יצא לנו עוד סיפור טוב לספר.                            </p>
+                        </div>
+                        <div class="flex justify-center">
+                            <img src="Brussles-Cover.jpg" class="trip-image" alt="בריסל">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Amsterdam Layer -->
+                <div class="content-layer bg-amsterdam" id="layer-amsterdam">
+                    <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-8 text-right">
+                            <span class="text-orange-400 font-bold tracking-widest uppercase text-sm italic">אביב 2023</span>
+                            <h2 class="text-5xl md:text-7xl text-orange-800">אמסטרדם</h2>
+                            <p class="text-gray-600 leading-loose text-lg md:text-2xl">
+אמסטרדם הייתה הטיול הראשון שלנו יחד. הגענו אליה ממש אחרי בריסל, והיא הייתה תיקון מושלם - הפעם לא היה מפחיד, רק כיף. טיילנו עם דויד ושובל, צחקנו בלי סוף (ואולי קצת רבנו), וזה הפך לאחד הטיולים הכי זכורים שלנו.                            </p>
+                        </div>
+                        <div class="flex justify-center">
+                            <img src="Amsterdam-Polaroid.jpg" class="trip-image" alt="אמסטרדם">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. NYC Layer -->
+                <div class="content-layer bg-nyc" id="layer-nyc">
+                    <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div class="flex justify-center order-2 md:order-1">
+                            <img src="New-York-Cover.jpg" class="trip-image" alt="קו הרקיע של ניו יורק">
+                        </div>
+                        <div class="space-y-8 order-1 md:order-2">
+                            <span class="text-blue-400 font-bold tracking-widest uppercase text-sm italic">חורף 2024</span>
+                            <h2 class="text-5xl md:text-7xl text-blue-800">ניו יורק</h2>
+                            <p class="text-gray-600 leading-loose text-lg md:text-2xl">
+ניו יורק בשלושה ימים בלבד. נחתנו והלכנו ישר לברודוויי לראות את הארי פוטר, למרות שמישהי הייתה אחרי משמרת כדיילת וסופר עייפה. אפילו שבסוף היא גם לא הרגישה משהו, זה עדיין היה טיול מעולה. ובין לבין גם סוף-סוף טעמתי את הפיש אנד צ׳יפס של גורדון רמזי.                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Rome Layer (Moved to before Iceland) -->
+                <div class="content-layer bg-rome" id="layer-rome">
+                    <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div class="relative inline-block order-2 md:order-1">
+                            <img src="Rome-Purposel.png" class="trip-image" alt="הצעת הנישואין ברומא">
+                            <div class="absolute -bottom-6 -left-6 bg-white p-4 md:p-6 shadow-xl hidden md:block">
+                                <p class="handwritten text-4xl text-rose-500">"על גג העולם"</p>
+                            </div>
+                        </div>
+                        <div class="space-y-8 order-1 md:order-2">
+                            <span class="text-rose-400 font-bold tracking-widest uppercase text-sm italic">הרגע הכי מיוחד שלנו</span>
+                            <h2 class="text-5xl md:text-7xl text-rose-800">רומא</h2>
+                            <p class="text-gray-600 leading-loose text-lg md:text-2xl">
+רומא מלאה בהיסטוריה, אבל מבחינתי הרגע הכי חשוב שקרה כאן היה כששאלתי אותך אם תרצי להתחתן איתי. וככה, באמצע טיול לרומא, החלטנו לקחת את הסיפור שלנו לשלב הבא.                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Iceland Layer -->
+                <div class="content-layer bg-iceland" id="layer-iceland">
+                    <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div class="flex justify-center order-2 md:order-1">
+                            <img src="Iceland-Cover.jpg" class="trip-image" alt="איסלנד">
+                        </div>
+                        <div class="space-y-8 order-1 md:order-2">
+                            <span class="text-cyan-500 font-bold tracking-widest uppercase text-sm italic">חורף 2025</span>
+                            <h2 class="text-5xl md:text-7xl text-cyan-800">איסלנד</h2>
+                            <p class="text-gray-600 leading-loose text-lg md:text-2xl">
+איסלנד הייתה ירח הדבש שלנו - שבועיים במקום שנראה כמעט לא אמיתי. הנופים והחוויות שחווינו שם הם מהדברים שקשה באמת להעביר במילים.                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Home Layer (Pile) -->
+                <div class="content-layer bg-home flex-col justify-center overflow-y-auto" id="layer-home">
+                    <div class="text-center mb-6 md:mb-10 w-full px-4">
+                        <h2 class="text-4xl md:text-6xl mb-2 md:mb-4">החיים בבית</h2>
+                        <p class="handwritten text-3xl md:text-4xl text-rose-400">ההרפתקה הכי טובה מכולן</p>
+                    </div>
+                    <div class="photo-pile-container">
+                        <div class="scatter-photo" style="transform: rotate(-5deg);">
+                            <img src="Home1.jpg" alt="אנחנו">
+                            <p class="text-base md:text-lg mt-3 italic text-center">אני</p>
+                        </div>
+                        <div class="scatter-photo" style="transform: rotate(3deg);">
+                            <img src="Home2.jpg" alt="הכלב שלנו">
+                            <p class="text-base md:text-lg mt-3 italic text-center">אוהב</p>
+                        </div>
+                        <div class="scatter-photo" style="transform: rotate(-8deg);">
+                            <img src="Home3.jpg" alt="תמונה משפחתית">
+                            <p class="text-base md:text-lg mt-3 italic text-center">אותך</p>
+                        </div>
+                        <div class="scatter-photo" style="transform: rotate(6deg);">
+                            <img src="Home4.jpg" alt="אנחנו בלילה">
+                            <p class="text-base md:text-lg mt-3 italic text-center">הכי (זאת התמונה האהובה עליי)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Final Layer -->
+                <div class="content-layer bg-white flex-col justify-center text-center px-4" id="layer-final">
+                    <h2 class="handwritten text-5xl md:text-7xl mb-6 md:mb-8 text-rose-600">לעוד המון הרפתקאות יחד...</h2>
+                    <p class="text-2xl md:text-4xl text-gray-500 mb-8 md:mb-12">אני אוהב אותך יותר מהכל.</p>
+                    
+                    <div class="mt-12 md:mt-20 border-t border-gray-100 pt-8 md:pt-12">
+                        <h3 class="handwritten text-5xl md:text-6xl text-rose-500 mb-2 md:mb-4">מתנה קטנה לאדם האהוב עליי</h3>
+                        <p class="text-lg md:text-xl text-gray-400">השותפה שלי, לחיים ולמסע</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const timeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: ".sticky-container",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1.5,
+                }
+            });
+
+            // Set initial state for polaroids
+            gsap.set(".polaroid", { 
+                y: "120vh", 
+                x: () => (Math.random() - 0.5) * 60,
+                rotation: () => Math.random() * 40 - 20,
+                scale: 0.7,
+                opacity: 0
+            });
+
+            // PHASE 1: Intro Fades Out
+            timeline.to("#layer-intro", { opacity: 0, y: -50, duration: 1 });
+
+            // PHASE 2: Polaroid Stacking
+            // Order: Brussels (pb) -> Amsterdam (p3) -> NYC (p2) -> Rome (p1) -> Iceland (p4) -> Us (p5)
+            timeline.to("#pb", { y: "0vh", x: "30px", opacity: 1, scale: 1, duration: 1.5, rotation: 12, zIndex: 10 }, "+=0.2");
+            timeline.to("#p3", { y: "0vh", x: "-40px", opacity: 1, scale: 1, duration: 1.5, rotation: -12, zIndex: 15 }, "+=0.2");
+            timeline.to("#p2", { y: "0vh", x: "20px", opacity: 1, scale: 1, duration: 1.5, rotation: 8, zIndex: 20 }, "+=0.2");
+            timeline.to("#p1", { y: "0vh", x: "-20px", opacity: 1, scale: 1, duration: 1.5, rotation: -5, zIndex: 30 }, "+=0.2");
+            timeline.to("#p4", { y: "0vh", x: "20px", opacity: 1, scale: 1, duration: 1.5, rotation: 3, zIndex: 40 }, "+=0.2");
+            timeline.to("#p5", { y: "0vh", x: "0px", opacity: 1, scale: 1, duration: 1.5, rotation: 5, zIndex: 50 }, "+=0.2");
+            
+            // PHASE 3: Stack Fades Out
+            timeline.to("#polaroid-stack", { opacity: 0, scale: 0.8, duration: 2 }, "+=1");
+
+            // PHASE 4: Transition through trip layers (Chronological Sequence)
+            const layers = ["#layer-brussels", "#layer-amsterdam", "#layer-nyc", "#layer-rome", "#layer-iceland", "#layer-home", "#layer-final"];
+            
+            layers.forEach((id, index) => {
+                // Fade In the current layer
+                timeline.to(id, { 
+                    autoAlpha: 1, 
+                    duration: 2,
+                    ease: "power2.inOut" 
+                });
+                
+                // Keep it visible for a bit
+                timeline.to({}, { duration: 3 }); 
+
+                // Fade Out the current layer (except the last one)
+                if (index < layers.length - 1) {
+                    timeline.to(id, { 
+                        autoAlpha: 0, 
+                        duration: 2,
+                        ease: "power2.inOut"
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
