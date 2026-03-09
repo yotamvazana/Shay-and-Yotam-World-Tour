@@ -25,17 +25,19 @@
         }
         .handwritten {
             font-family: 'Amatic SC', cursive;
-            font-size: 2rem;
-            line-height: 1;
+            font-size: 2.2rem;
+            line-height: 1.1;
         }
         
-        /* Larger Polaroid Styling */
+        /* Fixed & Scaled Polaroid Styling */
         .polaroid {
             background: white;
-            padding: 20px 20px 60px 20px;
+            padding: 20px 20px 70px 20px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             width: 340px;
-            height: 420px;
+            height: 460px; /* Increased height to prevent text overflow */
+            max-width: 85vw; /* Safety for very narrow screens */
+            max-height: 80vh;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -44,18 +46,21 @@
             opacity: 0;
             pointer-events: none;
             z-index: 10;
+            box-sizing: border-box;
         }
         .polaroid img {
             width: 100%;
-            height: 320px;
+            height: 310px; /* Slightly adjusted to fit caption better */
             object-fit: cover;
             background: #f3f4f6;
             display: block;
         }
         .polaroid-caption {
-            margin-top: 15px;
+            margin-top: 12px;
             text-align: center;
             color: #444;
+            width: 100%;
+            display: block;
         }
 
         /* Scroll Animation Sections */
@@ -91,6 +96,7 @@
             opacity: 0;
             visibility: hidden;
             padding: 0 10%;
+            overflow-y: auto; /* Fallback for content longer than viewport */
         }
 
         .bg-rome { background: #fff5f0; }
@@ -142,25 +148,30 @@
         /* Mobile Adaptations */
         @media (max-width: 768px) {
             .polaroid {
-                width: 280px;
-                height: 350px;
-                padding: 10px 10px 45px 10px;
+                width: 290px;
+                height: 400px;
+                padding: 15px 15px 55px 15px;
             }
             .polaroid img {
                 height: 260px;
             }
+            .handwritten {
+                font-size: 1.8rem;
+            }
             .content-layer {
-                padding: 0 5%;
+                padding: 5vh 5%;
                 flex-direction: column;
-                justify-content: center;
+                justify-content: flex-start; /* Start from top on mobile to avoid cutting bottom text */
+                align-items: center;
             }
             .container {
                 display: flex;
                 flex-direction: column;
-                gap: 2rem;
+                gap: 1.5rem;
+                padding-top: 2rem;
             }
             h2 {
-                font-size: 3rem !important;
+                font-size: 2.5rem !important;
                 line-height: 1.1;
                 text-align: center;
             }
@@ -168,7 +179,7 @@
                 max-width: 100%;
             }
             .text-2xl {
-                font-size: 1.125rem !important;
+                font-size: 1.1rem !important;
                 text-align: center;
             }
             .space-y-8 {
@@ -179,11 +190,11 @@
                 gap: 15px;
             }
             .scatter-photo {
-                width: 160px;
+                width: 150px;
                 padding: 8px 8px 25px 8px;
             }
             .scatter-photo img {
-                height: 140px;
+                height: 130px;
             }
         }
     </style>
@@ -208,31 +219,31 @@
                 </div>
 
                 <!-- 1. Stacking Polaroids (Phase 1) -->
-                <!-- Corrected Order: Brussels -> Amsterdam -> NYC -> Rome -> Iceland -> Us -->
+                <!-- Order: Brussels -> Amsterdam -> NYC -> Rome -> Iceland -> Us -->
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="polaroid-stack">
                     <div class="polaroid" id="pb">
                         <img src="Brussles-Polaroid.jpg" alt="בריסל">
-                        <div class="polaroid-caption handwritten text-3xl">וופלים, שוקולד ו"קצת" פחד</div>
+                        <div class="polaroid-caption handwritten">וופלים, שוקולד ו"קצת" פחד</div>
                     </div>
                     <div class="polaroid" id="p3">
                         <img src="Amsterdam-Polaroid.jpg" alt="אמסטרדם">
-                        <div class="polaroid-caption handwritten text-3xl">אמסטרדם, איך אפשר לשכוח?</div>
+                        <div class="polaroid-caption handwritten">אמסטרדם, איך אפשר לשכוח?</div>
                     </div>
                     <div class="polaroid" id="p2">
                         <img src="NYC-Polaroid.jpg" alt="ניו יורק">
-                        <div class="polaroid-caption handwritten text-3xl">גיחה קצרה לניו יורק</div>
+                        <div class="polaroid-caption handwritten">גיחה קצרה לניו יורק</div>
                     </div>
                     <div class="polaroid" id="p1">
                         <img src="Rome-Polaroid.jpg" alt="רומא">
-                        <div class="polaroid-caption handwritten text-3xl">המקום שבו התארסנו</div>
+                        <div class="polaroid-caption handwritten">המקום שבו התארסנו</div>
                     </div>
                     <div class="polaroid" id="p4">
                         <img src="Iceland-Polaroid.jpg" alt="איסלנד">
-                        <div class="polaroid-caption handwritten text-3xl">ירח דבש באיסלנד</div>
+                        <div class="polaroid-caption handwritten">ירח דבש באיסלנד</div>
                     </div>
                     <div class="polaroid" id="p5">
                         <img src="Us-Polaroid.jpg" alt="אנחנו">
-                        <div class="polaroid-caption handwritten text-3xl">התמונה האהובה עליי שלנו מהטיולים</div>
+                        <div class="polaroid-caption handwritten">התמונה האהובה עליי שלנו מהטיולים</div>
                     </div>
                 </div>
 
@@ -281,7 +292,7 @@
                     </div>
                 </div>
 
-                <!-- 5. Rome Layer (Moved to before Iceland) -->
+                <!-- 5. Rome Layer -->
                 <div class="content-layer bg-rome" id="layer-rome">
                     <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
                         <div class="relative inline-block order-2 md:order-1">
